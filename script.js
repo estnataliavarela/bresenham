@@ -24,10 +24,28 @@ function dibujar() {
 
     console.log(x0, y0, x1, y1);
     plot(2, 3);
+    dibujarPlano();
 }
 /**
  * Dibuja un pixel en el canvas aplicando escala
  */
 function plot(x, y) {
     ctx.fillRect(x * 20, canvas.height - y * 20, 5, 5);
+}
+/**
+ * Dibuja los ejes cartesianos
+ */
+function dibujarPlano() {
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.beginPath();
+    ctx.moveTo(0, canvas.height);
+    ctx.lineTo(canvas.width, canvas.height);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, canvas.height);
+    ctx.stroke();
 }
