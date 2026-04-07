@@ -23,4 +23,11 @@ function dibujar() {
     let y1 = parseInt(document.getElementById("y1").value);
 
     console.log(x0, y0, x1, y1);
+    plot(2, 3);
+}
+/**
+ * Dibuja un pixel en el canvas aplicando escala
+ */
+function plot(x, y) {
+    ctx.fillRect(x * 20, canvas.height - y * 20, 5, 5);
 }
