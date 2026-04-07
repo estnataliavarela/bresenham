@@ -59,3 +59,9 @@ function dibujarEscala() {
         ctx.fillText(i / 20, 5, canvas.height - i);
     }
 }
+/**
+ * Algoritmo de Bresenham
+ */
+function bresenham(x0, y0, x1, y1, plot) {
+
+}
