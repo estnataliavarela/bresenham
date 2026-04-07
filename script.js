@@ -26,6 +26,7 @@ function dibujar() {
     plot(2, 3);
     dibujarPlano();
     dibujarEscala();
+    bresenham(x0, y0, x1, y1, plot);
 }
 /**
  * Dibuja un pixel en el canvas aplicando escala
