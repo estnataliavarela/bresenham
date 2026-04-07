@@ -12,6 +12,7 @@ const ctx = canvas.getContext("2d");
  * Funcion principal del programa
  */
 function dibujar() {
+    ctx.fillRect(50, 50, 5, 5);
 
     /**
      * Coordenadas ingresadas por el usuario
