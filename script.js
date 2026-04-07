@@ -25,6 +25,7 @@ function dibujar() {
     console.log(x0, y0, x1, y1);
     plot(2, 3);
     dibujarPlano();
+    dibujarEscala();
 }
 /**
  * Dibuja un pixel en el canvas aplicando escala
@@ -48,4 +49,13 @@ function dibujarPlano() {
     ctx.moveTo(0, 0);
     ctx.lineTo(0, canvas.height);
     ctx.stroke();
+}
+/**
+ * Dibuja escala numerica en los ejes
+ */
+function dibujarEscala() {
+    for (let i = 0; i <= 400; i += 20) {
+        ctx.fillText(i / 20, i, canvas.height - 5);
+        ctx.fillText(i / 20, 5, canvas.height - i);
+    }
 }
