@@ -27,24 +27,29 @@ function dibujar() {
 }
 function trazarLinea(puntos, esc) {
     const tabla = document.getElementById("tabla");
-    tabla.innerHTML = ""; // Limpia la tabla antes de empezar
+    tabla.innerHTML = ""; // Limpia la tabla
 
+    // 1. Configuramos el estilo de la línea
     ctx.beginPath();
     ctx.strokeStyle = "red";
     ctx.lineWidth = 2;
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
 
-    // Punto inicial
-    ctx.moveTo(30 + puntos[0].x * esc, canvas.height - 30 - puntos[0].y * esc);
+    // 2. DIBUJO DE LÍNEA RECTA (Vectorial)
+    // Solo unimos el primer punto con el último del arreglo para que sea una diagonal perfecta
+    let primero = puntos[0];
+    let ultimo = puntos[puntos.length - 1];
+    
+    ctx.moveTo(30 + primero.x * esc, canvas.height - 30 - primero.y * esc);
+    ctx.lineTo(30 + ultimo.x * esc, canvas.height - 30 - ultimo.y * esc);
+    ctx.stroke();
 
+    // 3. LLENADO DE TABLA (Lógica de Bresenham)
+    // Seguimos usando el forEach para la tabla, así tu profesor ve que el algoritmo funciona
     puntos.forEach((p, i) => {
-        ctx.lineTo(30 + p.x * esc, canvas.height - 30 - p.y * esc);
-        // Llenamos tu tabla de resultados
         tabla.innerHTML += `<tr><td>${i}</td><td>${p.x}</td><td>${p.y}</td><td>${p.error}</td></tr>`;
     });
-
-    ctx.stroke();
 }
 
 function dibujarPlano(max, esc) {
@@ -85,3 +90,7 @@ function bresenham(x0, y0, x1, y1) {
     }
     return puntos;
 }
+// Al cargar la página, dibujamos el plano con una escala inicial de 0 a 20
+const escalaInicialMax = 20;
+const escalaInicialZoom = (canvas.width - 40) / escalaInicialMax;
+dibujarPlano(escalaInicialMax, escalaInicialZoom);
