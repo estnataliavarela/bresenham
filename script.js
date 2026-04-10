@@ -8,62 +8,66 @@ const canvas = document.getElementById("canvas");
  * Contexto 2D para dibujar en el canvas
  */
 const ctx = canvas.getContext("2d");
-/**
- * Funcion principal del programa
- */
 function dibujar() {
-    ctx.fillRect(50, 50, 5, 5);
-
-    /**
-     * Coordenadas ingresadas por el usuario
-     */
     let x0 = parseInt(document.getElementById("x0").value);
     let y0 = parseInt(document.getElementById("y0").value);
     let x1 = parseInt(document.getElementById("x1").value);
     let y1 = parseInt(document.getElementById("y1").value);
 
-    console.log(x0, y0, x1, y1);
-    plot(2, 3);
-    dibujarPlano();
-    dibujarEscala();
-    bresenham(x0, y0, x1, y1, plot);
-}
-/**
- * Dibuja un "bloque" pixelado en el canvas para formar una linea solida
- */
-function plot(x, y) {
-    ctx.fillStyle = "black"; // Aseguramos el color negro
-    // Explicacion de los cambios:
-    // 1. Usamos 20, 20 como tamaño para llenar todo el cuadro de la escala.
-    // 2. Restamos 20 a la coordenada Y para alinear el bloque correctamente sobre la linea base.
-    ctx.fillRect(x * 20, canvas.height - (y * 20) - 20, 20, 20);
-}
-/**
- * Dibuja los ejes cartesianos
- */
-function dibujarPlano() {
+    if (isNaN(x0) || isNaN(y0) || isNaN(x1) || isNaN(y1)) return;
 
+    const puntos = bresenham(x0, y0, x1, y1);
+    
+    // Esto calcula el "zoom" automáticamente
+    let maxCoord = Math.max(x0, y0, x1, y1, 10); 
+    let escala = (canvas.width - 40) / maxCoord; 
+
+    dibujarPlano(maxCoord, escala); // Le pasamos la nueva escala
+    trazarLinea(puntos, escala);    // Nueva función para la línea delgada
+}
+function trazarLinea(puntos, esc) {
+    const tabla = document.getElementById("tabla");
+    tabla.innerHTML = ""; // Limpia la tabla antes de empezar
+
+    ctx.beginPath();
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 2;
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+
+    // Punto inicial
+    ctx.moveTo(30 + puntos[0].x * esc, canvas.height - 30 - puntos[0].y * esc);
+
+    puntos.forEach((p, i) => {
+        ctx.lineTo(30 + p.x * esc, canvas.height - 30 - p.y * esc);
+        // Llenamos tu tabla de resultados
+        tabla.innerHTML += `<tr><td>${i}</td><td>${p.x}</td><td>${p.y}</td><td>${p.error}</td></tr>`;
+    });
+
+    ctx.stroke();
+}
+
+function dibujarPlano(max, esc) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    ctx.strokeStyle = "#ccc";
     ctx.beginPath();
-    ctx.moveTo(0, canvas.height);
-    ctx.lineTo(canvas.width, canvas.height);
+    // Ejes con margen de 30px para que los números no se corten
+    ctx.moveTo(30, canvas.height - 30);
+    ctx.lineTo(canvas.width, canvas.height - 30);
+    ctx.moveTo(30, 0);
+    ctx.lineTo(30, canvas.height - 30);
     ctx.stroke();
 
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(0, canvas.height);
-    ctx.stroke();
-}
-/**
- * Dibuja escala numerica en los ejes
- */
-function dibujarEscala() {
-    for (let i = 0; i <= 400; i += 20) {
-        ctx.fillText(i / 20, i, canvas.height - 5);
-        ctx.fillText(i / 20, 5, canvas.height - i);
+    // Dibujamos los números automáticamente según el valor máximo
+    ctx.fillStyle = "black";
+    let salto = Math.ceil(max / 10);
+    for (let i = 0; i <= max; i += salto) {
+        let pos = 30 + (i * esc);
+        ctx.fillText(i, pos, canvas.height - 15); // Números en X
+        ctx.fillText(i, 5, canvas.height - pos);  // Números en Y
     }
 }
+
 function bresenham(x0, y0, x1, y1) {
     let dx = Math.abs(x1 - x0);
     let dy = Math.abs(y1 - y0);
