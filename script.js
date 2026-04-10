@@ -29,10 +29,14 @@ function dibujar() {
     bresenham(x0, y0, x1, y1, plot);
 }
 /**
- * Dibuja un pixel en el canvas aplicando escala
+ * Dibuja un "bloque" pixelado en el canvas para formar una linea solida
  */
 function plot(x, y) {
-    ctx.fillRect(x * 20, canvas.height - y * 20, 5, 5);
+    ctx.fillStyle = "black"; // Aseguramos el color negro
+    // Explicacion de los cambios:
+    // 1. Usamos 20, 20 como tamaño para llenar todo el cuadro de la escala.
+    // 2. Restamos 20 a la coordenada Y para alinear el bloque correctamente sobre la linea base.
+    ctx.fillRect(x * 20, canvas.height - (y * 20) - 20, 20, 20);
 }
 /**
  * Dibuja los ejes cartesianos
@@ -60,32 +64,20 @@ function dibujarEscala() {
         ctx.fillText(i / 20, 5, canvas.height - i);
     }
 }
-/**
- * Algoritmo de Bresenham
- */
-function bresenham(x0, y0, x1, y1, plot) {
+function bresenham(x0, y0, x1, y1) {
+    let dx = Math.abs(x1 - x0);
+    let dy = Math.abs(y1 - y0);
+    let sx = (x0 < x1) ? 1 : -1;
+    let sy = (y0 < y1) ? 1 : -1;
+    let err = dx - dy;
+    let puntos = [];
 
-}
-let dx = Math.abs(x1 - x0);
-let dy = Math.abs(y1 - y0);
-let sx = (x0 < x1) ? 1 : -1;
-let sy = (y0 < y1) ? 1 : -1;
-let err = dx - dy;
-while (true) {
-
-    plot(x0, y0);
-
-    if (x0 === x1 && y0 === y1) break;
-
-    let e2 = 2 * err;
-
-    if (e2 > -dy) {
-        err -= dy;
-        x0 += sx;
+    while (true) {
+        puntos.push({x: x0, y: y0, error: err});
+        if (x0 === x1 && y0 === y1) break;
+        let e2 = 2 * err;
+        if (e2 > -dy) { err -= dy; x0 += sx; }
+        if (e2 < dx) { err += dx; y0 += sy; }
     }
-
-    if (e2 < dx) {
-        err += dx;
-        y0 += sy;
-    }
+    return puntos;
 }
