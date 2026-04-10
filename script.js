@@ -54,6 +54,15 @@ function trazarLinea(puntos, esc) {
 
 function dibujarPlano(max, esc) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Dibujar cuadrícula
+    ctx.strokeStyle = "#f0f0f0"; 
+    for (let i = 0; i <= max; i++) {
+        let pos = 30 + (i * esc);
+        ctx.beginPath();
+        ctx.moveTo(pos, 0); ctx.lineTo(pos, canvas.height - 30); // Vertical
+        ctx.moveTo(30, canvas.height - pos); ctx.lineTo(canvas.width, canvas.height - pos); // Horizontal
+        ctx.stroke();
+    }
     ctx.strokeStyle = "#ccc";
     ctx.beginPath();
     // Ejes con margen de 30px para que los números no se corten
